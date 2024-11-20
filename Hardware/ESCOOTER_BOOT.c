@@ -196,7 +196,7 @@ void BootServiceRoutine(uint8_t isWakeUp)
               *To have 1.5 seconds delay, bootCount is 3.
               *To see the blink, wait until the bootCount is 3 while you are pressing the button!
               * */
-             if(bootReady == 2)
+             if(bootReady == 3)
              {
                  /*Count-Down finished*/
                  BootCountStop();
