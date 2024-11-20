@@ -21,6 +21,7 @@
 
 #include "ti_drivers_config.h"
 
+/*For Boot Routine Purpose. Please don't modify this file!*/
 uint8_t bootReady = 0x00;
 uint8_t howToBoot = 0xFF;
 
@@ -195,7 +196,7 @@ void BootServiceRoutine(uint8_t isWakeUp)
               *To have 1.5 seconds delay, bootCount is 3.
               *To see the blink, wait until the bootCount is 3 while you are pressing the button!
               * */
-             if(bootReady == 3)
+             if(bootReady == 2)
              {
                  /*Count-Down finished*/
                  BootCountStop();

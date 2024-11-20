@@ -14,6 +14,7 @@ extern "C"
 #endif
 #include<stdint.h>
 
+/*For Boot Routine Purpose. Please don't modify this file!*/
 extern void PowerModeStatusManager();
 extern void BootCountDownCreate();
 extern void BootCountDownInit();
