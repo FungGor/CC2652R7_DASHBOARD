@@ -10,6 +10,7 @@
  */
 #include "Application/power_on_time.h"
 #include "Application/simple_peripheral.h"  //  need to obtain SP_ADVERTISING_TIMEOUT
+#include "Hardware/ESCOOTER_BOOT.h"
 
 #include "Profiles/dashboard_profile.h"
 #include "Profiles/battery_profile.h"
@@ -36,7 +37,8 @@ uint16_t    powerOnTimeMinutes = 0;                    // power on time in minut
 uint32_t    pot_count = 0;
 uint32_t    powerOnTimeMS = 0;      // power on time in milli-seconds
 uint8_t     *ptr_pot_initComplete_flag;
-bool        *ptr_pot_powerOn;
+uint8_t        *ptr_pot_powerOn;
+uint8_t     *ptr_pot_snvWriteComplete_flag = 0;
 
 // Task configuration
 Task_Struct potTask;
@@ -83,7 +85,6 @@ void power_on_time_init()
     ptr_pot_profileCharVal = profile_charVal_profileCharValRegister();
 }
 
-
 /*********************************************************************
  * @fn      power on time_taskFxn
  *
@@ -91,6 +92,7 @@ void power_on_time_init()
  *
  * @param   a0, a1 - not used.
  *********************************************************************/
+uint8_t pot_exit = 0;
 static void power_on_time_taskFxn(UArg a0, UArg a1)
 {
   /* Initialize application */
@@ -110,15 +112,19 @@ static void power_on_time_taskFxn(UArg a0, UArg a1)
             powerOnTimeMS  += POT_TIME;
             power_on_time_cal();
 
-            if (!(*ptr_pot_powerOn))
+            if ((!(*ptr_pot_powerOn)) && (*ptr_pot_snvWriteComplete_flag))
             {
               /*** break out of FOR loop during power off  ***/
             //          task_exit(); //???
-            //          break;
+                pot_exit = 1;
+                break;
             }
         }
+
     }/* end FOR loop */
 
+    /*  Runs Power Shut Down  */
+    SystemShutDownRoutine();
 }
 
 /*********************************************************************
@@ -130,7 +136,8 @@ static void power_on_time_taskFxn(UArg a0, UArg a1)
  *
  * @return  powerOnTimeMinute
  *********************************************************************/
-extern uint16_t power_on_time_getPowerOnTime(){
+extern uint16_t power_on_time_getPowerOnTime()
+{
     return (powerOnTimeMinutes);
 }
 
@@ -172,7 +179,7 @@ static void power_on_time_cal()
  *
  * @return  Nil
  */
-extern void pot_powerOnRegister(bool *ptr_powerOn)
+extern void pot_powerOnRegister(uint8_t *ptr_powerOn)
 {
     ptr_pot_powerOn = ptr_powerOn;
 }
@@ -193,4 +200,18 @@ extern void pot_setDeviceUpTime(uint32_t uptimeMinutes)
 extern void pot_InitComplFlagRegister(uint8_t *ptr_initComplete_flag)
 {
     ptr_pot_initComplete_flag = ptr_initComplete_flag;
+}
+
+/*********************************************************************
+ * @fn      pot_snvWriteCompleteFlag_register
+ *
+ * @brief   call to assign and register the pointer to pot_snvWriteCompleteFlag_register
+ *
+ * @param   a pointer to pot_snvWriteCompleteFlag_register, i.e. ptr_pot_snvWriteComplete_flag
+ *
+ * @return  None
+ */
+extern void pot_snvWriteCompleteFlag_register(uint8_t *ptr_snvWriteComplete_flag)
+{
+    ptr_pot_snvWriteComplete_flag = ptr_snvWriteComplete_flag;
 }

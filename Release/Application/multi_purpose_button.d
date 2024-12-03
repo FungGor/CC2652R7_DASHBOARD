@@ -118,6 +118,7 @@ Application/multi_purpose_button.o: ../Application/multi_purpose_button.c \
  C:/ti/simplelink_cc13xx_cc26xx_sdk_7_40_00_77/kernel/tirtos7/packages/ti/sysbios/knl/Task_defs.h \
  C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Hardware/gGo_device_params.h \
  C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Hardware/battery_params.h \
+ C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Hardware/gGo_debug_config.h \
  C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Application/general_purpose_timer.h \
  C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Application/brake_and_throttle.h \
  C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Hardware/STM32MCP.h \
@@ -367,6 +368,8 @@ C:/ti/simplelink_cc13xx_cc26xx_sdk_7_40_00_77/kernel/tirtos7/packages/ti/sysbios
 C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Hardware/gGo_device_params.h:
 
 C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Hardware/battery_params.h:
+
+C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Hardware/gGo_debug_config.h:
 
 C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Application/general_purpose_timer.h:
 

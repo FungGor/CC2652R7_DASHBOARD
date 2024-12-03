@@ -17,6 +17,7 @@
 #include <ti_drivers_config.h>
 
 #include "Application/ALS_control.h"
+#include "Application/lights.h"
 
 #include "UDHAL/UDHAL_PWM.h"
 
@@ -25,7 +26,7 @@
 /* Hardware Header files */
 #ifdef veml6030
 #include <Hardware/veml6030.h>
-#endif
+#endif  //veml6030
 
 #ifdef veml3235
 #include <Hardware/veml3235.h>
@@ -47,7 +48,7 @@ uint8_t ALSSD = ALS_POWERON;
 uint16_t HighThresholdLux = 2000;   //default 0xFFFF
 uint16_t LowThresholdLux = 400;     // 0x1388 = 5000, 0x1770 = 6000, 0x1964 = 6500, 0x1B58 = 7000
 
-#endif
+#endif  //veml6030
 
 #ifdef veml3235
 /***** Configuration and Setting parameters *****/
@@ -95,7 +96,7 @@ uint8_t ALS_control_init()
         veml6030_setIntThreshold(VEML6030_ALS_WL, LowThresholdLux);     // use with Interrupt enable. set low threshold to 400 lux
     }
     I2C_transfer_count++;
-#endif
+#endif  //veml6030
 
 #ifdef veml3235
     /***** Enable register on veml3235 sensor  ****/
@@ -130,7 +131,7 @@ uint8_t ALS_control_calculateLux()
     lux_result = veml6030_calculateLux();
 //    veml6030_read(VEML6030_ID);
 //    I2C_transfer_count++;
-#endif
+#endif  //veml6030
 
 #ifdef veml3235
     /***** Read channel data registers on veml3235 *****/
@@ -160,13 +161,13 @@ void ALS_control_setLight()
 
     if (flagb >= sampleBits){
         if (lightStatus == 0){
-            UDHAL_PWM_setHLDutyAndPeriod(99);   // set head-light on @ 99% pwmPeriod
+//            UDHAL_PWM_setHLDutyAndPeriod(99);   // set head-light on @ 99% pwmPeriod
             lightStatus = 1;                    // light = ON
         }
     }
     else if (flagb == 0){
         if (lightStatus == 1){
-            UDHAL_PWM_setHLDutyAndPeriod(0);    // set head-light off
+//            UDHAL_PWM_setHLDutyAndPeriod(0);    // set head-light off
             lightStatus = 0;                    //light = OFF
         }
     }
@@ -181,6 +182,8 @@ void ALS_control_setLight()
  * Call this function to get the active Interrupt configuration
  *
  *  */
+#ifdef veml6030
 extern uint8_t ALS_control_getIntR(){
     return (IntR);
 }
+#endif //veml6030

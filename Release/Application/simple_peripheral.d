@@ -139,8 +139,10 @@ Application/simple_peripheral.o: ../Application/simple_peripheral.c \
  C:/ti/simplelink_cc13xx_cc26xx_sdk_7_40_00_77/source/ti/drivers/PWM.h \
  C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/UDHAL/UDHAL_Timer2.h \
  C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Hardware/STM32MCP.h \
+ C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Hardware/gGo_debug_config.h \
  C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/UDHAL/UDHAL_Timer3.h \
  C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Application/multi_purpose_button.h \
+ C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Hardware/ESCOOTER_BOOT.h \
  C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Application/general_purpose_timer.h \
  C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Application/snv_internal.h \
  C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Application/brake_and_throttle.h \
@@ -426,9 +428,13 @@ C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/UDHAL/UDHAL_T
 
 C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Hardware/STM32MCP.h:
 
+C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Hardware/gGo_debug_config.h:
+
 C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/UDHAL/UDHAL_Timer3.h:
 
 C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Application/multi_purpose_button.h:
+
+C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Hardware/ESCOOTER_BOOT.h:
 
 C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Application/general_purpose_timer.h:
 

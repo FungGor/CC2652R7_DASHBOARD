@@ -45,10 +45,12 @@ uint8_t UDHAL_init()
     /* Create UART for usage */
     UDHAL_UART_init();
     UDHAL_UARTOpenStatus = UDHAL_UART_params_init();
-    if (UDHAL_UARTOpenStatus) {
+    if (UDHAL_UARTOpenStatus)
+    {
         UDHAL_sysFatalError.UARTfailure = UDHAL_SUCCESS;
     }
-    else {
+    else
+    {
         UDHAL_sysFatalError.UARTfailure = UDHAL_FAILURE;
 
     }
@@ -56,30 +58,36 @@ uint8_t UDHAL_init()
     UDHAL_ADC_init();
     UDHAL_ADC_throttleOpenStatus = UDHAL_ADC_throttleOpen();
     UDHAL_ADC_brakeOpenStatus = UDHAL_ADC_brakeOpen();
-    if ((UDHAL_ADC_throttleOpenStatus) && (UDHAL_ADC_brakeOpenStatus)){
+    if ((UDHAL_ADC_throttleOpenStatus) && (UDHAL_ADC_brakeOpenStatus))
+    {
         UDHAL_sysFatalError.ADCfailure = UDHAL_SUCCESS;
     }
-    else {
+    else
+    {
         UDHAL_sysFatalError.ADCfailure = UDHAL_FAILURE;
     }
 
     /* Create I2C for usage */
     UDHAL_I2C_init();
     UDHAL_I2COpenStatus = UDHAL_I2C_paramInit();
-    if (UDHAL_I2COpenStatus){
-        UDHAL_sysFatalError.I2Cfailure = UDHAL_SUCCESS;  //
+    if (UDHAL_I2COpenStatus)    // if not NULL
+    {
+        UDHAL_sysFatalError.I2Cfailure = UDHAL_SUCCESS;
     }
-    else {
+    else    // if NULL
+    {
         UDHAL_sysFatalError.I2Cfailure = UDHAL_FAILURE;
     }
 
     /* Create PWM for usage */
     UDHAL_PWM_init();
     UDHAL_PWMOpenStatus = UDHAL_PWM_paramInit();
-    if(UDHAL_PWMOpenStatus) {
+    if(UDHAL_PWMOpenStatus)
+    {
         UDHAL_sysFatalError.PWMfailure = UDHAL_SUCCESS;
     }
-    else {
+    else
+    {
         UDHAL_sysFatalError.PWMfailure = UDHAL_FAILURE;
     }
 

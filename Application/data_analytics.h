@@ -100,7 +100,7 @@ typedef struct appData{                                 // is appData needed her
  * FUNCTIONS
  *********************************************************************/
 extern void data_analytics_init(void);
-extern void da_powerOnRegister(bool *ptrpoweron);
+extern void da_powerOnRegister(uint8_t *ptrpoweron);
 
 extern void data_analytics_setSNVBufferRegister(uint32_t (*ptrsnvbuf)[]);
 extern void data_analytics_MCUDArrayRegister(MCUD_t (*ptrMCUD));

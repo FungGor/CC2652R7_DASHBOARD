@@ -17,13 +17,10 @@ extern "C"
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include "Hardware/battery_params.h"
-
 ///*********************************************************************************************
 // *  Battery Option
 // *********************************************************************************************/
-//#define BATTERY_40700mV_S11P2           1
-//#undef  BATTERY_37000mV_S10P2
+#include "Hardware/battery_params.h"
 
 #define CC2652R7_LAUNCHXL               1
 
@@ -91,20 +88,8 @@ extern "C"
 #define LUXTHRESHOLD                   500  // light shall be ON when light intensity is consistently below this lux value
 
 /*********************************************************************************************
- *  Error Codes
+ *  Error Priorities and Codes
  *********************************************************************************************/
-//// Controller Error Codes
-//#define CONTROLLER_NORMAL                               0x00
-//#define PHASE_CURRENT_ABNORMAL                          0x2A
-//#define MOSFET_ABNORMAL                                 0x2E
-////#define OPAMP_ABNORAML
-//#define GATE_DRIVER_ABNORMAL                            0x2C
-//#define HEATSINK_TEMPERATURE_ABNORMAL                   0x2F
-////  Motor Error Codes
-//#define MOTOR_NORMAL                                    0x00
-//#define HALL_SENSOR_ABNORMAL                            0x3A
-//#define MOTOR_TEMPERATURE_ABNORMAL                      0x3C
-//
 /********************************************************************************************************************************************/
 /*      error type                         error priority (criticality)      Description                               error code displayed */
 // system Normal
@@ -139,7 +124,9 @@ extern "C"
 // Warnings
 #define BATTERY_CRITICALLY_LOW_WARNING                  0x20    // 32:Battery level critically low warning
 
-/**  Displayed Error Code  **/
+/*********************************************************************************************/
+/**  LED Display and MOBILE APP Error Codes  **/
+/*********************************************************************************************/
 #define SYS_NORMAL_CODE                                 0xFF
 
 #define SYS_FATAL_ERROR_CODE                            0x0F

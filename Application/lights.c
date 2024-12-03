@@ -13,6 +13,8 @@
 #include "Application/lights.h"
 #include "Application/ALS_control.h"
 #include "Application/led_display.h"
+#include "Application/brake_and_throttle.h"
+
 #include "UDHAL/UDHAL_PWM.h"
 
 #include "Profiles/controller_profile.h"
@@ -31,12 +33,13 @@ static void (*lightModeArray[3])(void) = {lights_MODE_OFF, lights_MODE_ON, light
 uint8_t     light_mode;
 uint8_t     light_mode_Index;
 uint8_t     light_status = LIGHT_STATUS_INITIAL;
-uint8_t     taillightStatus = STM32MCP_TAIL_LIGHT_OFF;
+uint8_t     taillightStatus = ESCOOTER_TAIL_LIGHT_OFF;
+
 
 uint8_t     lightStatusNew = LIGHT_STATUS_INITIAL;
 
 uint16_t    lightControl_pwmPeriod = 1000;
-uint16_t    lightControl_pwmDuty = 500;
+//uint16_t    lightControl_pwmDuty = 500;
 uint8_t     lightControl_pwmOpenStatus = 0;
 
 profileCharVal_t    *ptr_lights_profileCharVal;
@@ -110,13 +113,13 @@ void lights_init( uint8_t lights_i2cOpenStatus, uint8_t uart2ErrorStatus, uint8_
     {
         light_status = LIGHT_STATUS_ON;
         *ptr_lights_flagb = lights_sampleBits;
-        taillightStatus = STM32MCP_TAIL_LIGHT_ON;
+        taillightStatus = ESCOOTER_TOGGLE_TAIL_LIGHT;
     }
     else
     {
         light_status = LIGHT_STATUS_OFF;
         *ptr_lights_flagb = 0;
-        taillightStatus = STM32MCP_TAIL_LIGHT_OFF;
+        taillightStatus = ESCOOTER_TAIL_LIGHT_OFF;
     }
 
     lightStatusNew = light_status;
@@ -138,18 +141,17 @@ void lights_init( uint8_t lights_i2cOpenStatus, uint8_t uart2ErrorStatus, uint8_
  *
  * @return  light_status
  *********************************************************************/
-void lights_MODE_AUTO()
-{
+void lights_MODE_AUTO(){
     if (light_status != lightStatusNew)
     {
         light_status = lightStatusNew;
         if (light_status == LIGHT_STATUS_ON)
         {
-            taillightStatus = STM32MCP_TAIL_LIGHT_ON;
+            taillightStatus = ESCOOTER_TOGGLE_TAIL_LIGHT;
         }
         else
         {
-            taillightStatus = STM32MCP_TAIL_LIGHT_OFF;
+            taillightStatus = ESCOOTER_TAIL_LIGHT_OFF;
         }
         lights_statusChg();
     }
@@ -164,14 +166,12 @@ void lights_MODE_AUTO()
  *
  * @return  None
  *********************************************************************/
-void lights_MODE_OFF()
-{
+void lights_MODE_OFF(){
     if (light_status != LIGHT_STATUS_OFF)
     {
         light_status = LIGHT_STATUS_OFF;
         *ptr_lights_flagb = 0;
-        taillightStatus = STM32MCP_TAIL_LIGHT_OFF;
-
+        taillightStatus = ESCOOTER_TAIL_LIGHT_OFF;
         lights_statusChg();
     }
 }
@@ -185,13 +185,12 @@ void lights_MODE_OFF()
  *
  * @return  None
  *********************************************************************/
-void lights_MODE_ON()
-{
+void lights_MODE_ON(){
     if (light_status != LIGHT_STATUS_ON)
     {
         light_status = LIGHT_STATUS_ON;
         *ptr_lights_flagb = lights_sampleBits;
-        taillightStatus = STM32MCP_TAIL_LIGHT_ON;
+        taillightStatus = ESCOOTER_TOGGLE_TAIL_LIGHT;
         lights_statusChg();
     }
 }
@@ -205,11 +204,10 @@ void lights_MODE_ON()
  *
  * @return  None
  *********************************************************************/
+uint16_t lights_PWMDuty;
 
-void lights_statusChg(void)
-{
+void lights_statusChg(void){
     /* switch LED display brightness depending on light status */
-    uint16_t lights_PWMDuty;
     uint8_t  ledPower;
 
     switch(light_status)
@@ -218,42 +216,28 @@ void lights_statusChg(void)
             {
                 /* when light status is on (ambient light must be low), led power set to led_power_light_on (a low power value)  */
                 ledPower = LED_POWER_LIGHT_ON;
-
-    #ifdef CC2652R7_LAUNCHXL
                 lights_PWMDuty = LIGHT_PWM_DUTY;
-    #endif  //CC2652R7_LAUNCHXL
-
                 break;
             }
     case LIGHT_STATUS_OFF:
             {
                 /* when light status is off (ambient light must be high), led power set to led_power_light_off (a high power value)  */
                 ledPower = LED_POWER_LIGHT_OFF;
-
-    #ifdef CC2652R7_LAUNCHXL
                 lights_PWMDuty = 0;
-    #endif  //CC2652R7_LAUNCHXL
-
                 break;
             }
     default:
         break;
     }
 
-    #ifdef CC2652R7_LAUNCHXL
     /*** activate headlight ***/
     UDHAL_PWM_setHLDutyAndPeriod(lights_PWMDuty);
-
     /**** send new tail light status to motor_controller to command tail light ****/
     ptr_lights_STM32MCPDArray->tail_light_status = taillightStatus;
-
     if (lights_uart2ErrorStatus == 0)// if no uart error
     {
         motor_control_taillightStatusChg();         // called only when tail light status has changed, otherwise, it will not reach here
     }
-
-    #endif
-
     /* updates light status Characteristic Value -> Mobile App */
     /******  Dashboard services  *************************************/
     ptr_charVal = (ptr_lights_profileCharVal->ptr_dash_charVal->ptr_lightStatus);
@@ -261,7 +245,6 @@ void lights_statusChg(void)
 
     led_display_setLEDPower(ledPower);
     led_display_setLightStatus(light_status);
-
 }
 
 /*********************************************************************
@@ -273,8 +256,7 @@ void lights_statusChg(void)
  *
  * @return  None
  *********************************************************************/
-uint8_t lights_lightModeChange()
-{
+uint8_t lights_lightModeChange(){
     light_mode++;
 
     if(light_mode > light_mode_Index)
@@ -285,14 +267,12 @@ uint8_t lights_lightModeChange()
 
     /* send light_mode to led display */
     led_display_setLightMode( light_mode );
-
     /* updates light mode Characteristic Value -> Mobile App */
     /******              Dashboard services                      **************/
     ptr_charVal = (ptr_lights_profileCharVal->ptr_dash_charVal->ptr_lightMode);
     profile_setCharVal(ptr_charVal, DASHBOARD_LIGHT_MODE_LEN, light_mode);
 
     (*lightModeArray[light_mode])();
-
     return (light_mode);
 }
 
@@ -337,7 +317,20 @@ extern void* lights_lightModeRegister(){
 
 
 
-extern void lights_STM32MCPDArrayRegister(STM32MCPD_t *ptrSTM32MCDArray)
-{
+extern void lights_STM32MCPDArrayRegister(STM32MCPD_t *ptrSTM32MCDArray){
     ptr_lights_STM32MCPDArray = ptrSTM32MCDArray;
+}
+
+/*********************************************************************
+ * @fn      lights_setLightOff
+ *
+ * @brief   Turn off light
+ *
+ * @param   None
+ *
+ * @return  None
+ *********************************************************************/
+extern void lights_setLightOff( void ){
+    light_mode = LIGHT_MODE_OFF;
+    lights_MODE_OFF();
 }

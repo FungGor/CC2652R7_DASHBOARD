@@ -288,7 +288,7 @@ const uint_least8_t GPIO_pinUpperBound = 30;
  */
 GPIO_PinConfig gpioPinConfigs[31] = {
     GPIO_CFG_INPUT_INTERNAL | GPIO_CFG_IN_INT_BOTH_EDGES | GPIO_CFG_PULL_UP_INTERNAL, /* CONFIG_GPIO_0 */
-    GPIO_CFG_NO_DIR, /* DIO_1 */
+    GPIO_CFG_INPUT_INTERNAL | GPIO_CFG_IN_INT_NONE | GPIO_CFG_PULL_NONE_INTERNAL, /* CONFIG_GPIO_1 */
     /* Owned by UART2 as RX */
     GPIO_CFG_INPUT_INTERNAL | GPIO_CFG_IN_INT_NONE | GPIO_CFG_PULL_DOWN_INTERNAL, /* CONFIG_GPIO_UART2_RX */
     /* Owned by UART2 as TX */
@@ -306,8 +306,8 @@ GPIO_PinConfig gpioPinConfigs[31] = {
     GPIO_CFG_NO_DIR, /* DIO_11 */
     /* Owned by CONFIG_GPTIMER_1 as PWM Pin */
     GPIO_CFG_OUTPUT_INTERNAL | GPIO_CFG_OUT_STR_MED | GPIO_CFG_OUT_LOW, /* CONFIG_GPIO_PWM_1 */
-    GPIO_CFG_INPUT_INTERNAL | GPIO_CFG_IN_INT_BOTH_EDGES | GPIO_CFG_PULL_NONE_INTERNAL, /* CONFIG_GPIO_BTN1 */
-    GPIO_CFG_NO_DIR, /* DIO_14 */
+    GPIO_CFG_NO_DIR, /* DIO_13 */
+    GPIO_CFG_INPUT_INTERNAL | GPIO_CFG_IN_INT_NONE | GPIO_CFG_PULL_NONE_INTERNAL, /* CONFIG_GPIO_BTN2 */
     GPIO_CFG_NO_DIR, /* DIO_15 */
     GPIO_CFG_NO_DIR, /* DIO_16 */
     GPIO_CFG_NO_DIR, /* DIO_17 */
@@ -323,7 +323,8 @@ GPIO_PinConfig gpioPinConfigs[31] = {
     GPIO_CFG_NO_DIR, /* DIO_25 */
     GPIO_CFG_NO_DIR, /* DIO_26 */
     GPIO_CFG_NO_DIR, /* DIO_27 */
-    GPIO_CFG_NO_DIR, /* DIO_28 */
+    /* Owned by CONFIG_GPTIMER_2 as PWM Pin */
+    GPIO_CFG_OUTPUT_INTERNAL | GPIO_CFG_OUT_STR_MED | GPIO_CFG_OUT_LOW, /* CONFIG_GPIO_PWM_2 */
     GPIO_CFG_NO_DIR, /* DIO_29 */
     GPIO_CFG_NO_DIR, /* DIO_30 */
 };
@@ -345,12 +346,14 @@ void* gpioUserArgs[31];
 
 const uint_least8_t CONFIG_GPIO_ADC_THR_AIN_CONST = CONFIG_GPIO_ADC_THR_AIN;
 const uint_least8_t CONFIG_GPIO_ADC_BRK_AIN_CONST = CONFIG_GPIO_ADC_BRK_AIN;
-const uint_least8_t CONFIG_GPIO_BTN1_CONST = CONFIG_GPIO_BTN1;
+const uint_least8_t CONFIG_GPIO_BTN2_CONST = CONFIG_GPIO_BTN2;
 const uint_least8_t CONFIG_GPIO_LED_0_CONST = CONFIG_GPIO_LED_0;
 const uint_least8_t CONFIG_GPIO_0_CONST = CONFIG_GPIO_0;
+const uint_least8_t CONFIG_GPIO_1_CONST = CONFIG_GPIO_1;
 const uint_least8_t CONFIG_GPIO_I2C_SDA_CONST = CONFIG_GPIO_I2C_SDA;
 const uint_least8_t CONFIG_GPIO_I2C_SCL_CONST = CONFIG_GPIO_I2C_SCL;
 const uint_least8_t CONFIG_GPIO_PWM_1_CONST = CONFIG_GPIO_PWM_1;
+const uint_least8_t CONFIG_GPIO_PWM_2_CONST = CONFIG_GPIO_PWM_2;
 const uint_least8_t CONFIG_GPIO_UART2_TX_CONST = CONFIG_GPIO_UART2_TX;
 const uint_least8_t CONFIG_GPIO_UART2_RX_CONST = CONFIG_GPIO_UART2_RX;
 const uint_least8_t CONFIG_GPIO_PWM_0_CONST = CONFIG_GPIO_PWM_0;
@@ -491,7 +494,7 @@ const uint_least8_t NVS_count = CONFIG_NVS_COUNT;
 #include <ti/devices/cc13x2x7_cc26x2x7/inc/hw_ints.h>
 #include <ti/devices/cc13x2x7_cc26x2x7/inc/hw_memmap.h>
 
-#define CONFIG_PWM_COUNT 2
+#define CONFIG_PWM_COUNT 3
 
 /*
  *  ======== pwmCC26XXObjects ========
@@ -513,6 +516,11 @@ const PWMTimerCC26XX_HwAttrs pwmTimerCC26XXHWAttrs[CONFIG_PWM_COUNT] = {
         .pwmPin = CONFIG_GPIO_PWM_1,
         .gpTimerUnit = CONFIG_GPTIMER_1
     },
+    /* CONFIG_PWM_2 */
+    {
+        .pwmPin = CONFIG_GPIO_PWM_2,
+        .gpTimerUnit = CONFIG_GPTIMER_2
+    },
 };
 
 /*
@@ -532,10 +540,17 @@ const PWM_Config PWM_config[CONFIG_PWM_COUNT] = {
         .object = &pwmTimerCC26XXObjects[CONFIG_PWM_1],
         .hwAttrs = &pwmTimerCC26XXHWAttrs[CONFIG_PWM_1]
     },
+    /* CONFIG_PWM_2 */
+    {
+        .fxnTablePtr = &PWMTimerCC26XX_fxnTable,
+        .object = &pwmTimerCC26XXObjects[CONFIG_PWM_2],
+        .hwAttrs = &pwmTimerCC26XXHWAttrs[CONFIG_PWM_2]
+    },
 };
 
 const uint_least8_t CONFIG_PWM_0_CONST = CONFIG_PWM_0;
 const uint_least8_t CONFIG_PWM_1_CONST = CONFIG_PWM_1;
+const uint_least8_t CONFIG_PWM_2_CONST = CONFIG_PWM_2;
 const uint_least8_t PWM_count = CONFIG_PWM_COUNT;
 
 /*
@@ -686,7 +701,7 @@ const uint_least8_t UART2_count = CONFIG_UART2_COUNT;
 #include <ti/devices/cc13x2x7_cc26x2x7/inc/hw_memmap.h>
 #include <ti/devices/cc13x2x7_cc26x2x7/inc/hw_ints.h>
 
-#define CONFIG_GPTIMER_COUNT 2
+#define CONFIG_GPTIMER_COUNT 3
 
 /*
  *  ======== gptimerCC26XXObjects ========
@@ -699,20 +714,28 @@ GPTimerCC26XX_Object gptimerCC26XXObjects[CONFIG_GPTIMER_COUNT];
 const GPTimerCC26XX_HWAttrs gptimerCC26XXHWAttrs[CONFIG_GPTIMER_COUNT] = {
     /* CONFIG_GPTIMER_1, used by CONFIG_PWM_1 */
     {
-        .baseAddr = GPT0_BASE,
-        .intNum      = INT_GPT0A,
+        .baseAddr = GPT2_BASE,
+        .intNum      = INT_GPT2A,
         .intPriority = (~0),
-        .powerMngrId = PowerCC26XX_PERIPH_GPT0,
-        .pinMux      = GPT_PIN_0A
+        .powerMngrId = PowerCC26XX_PERIPH_GPT2,
+        .pinMux      = GPT_PIN_2A
+    },
+    /* CONFIG_GPTIMER_2, used by CONFIG_PWM_2 */
+    {
+        .baseAddr = GPT2_BASE,
+        .intNum      = INT_GPT2B,
+        .intPriority = (~0),
+        .powerMngrId = PowerCC26XX_PERIPH_GPT2,
+        .pinMux      = GPT_PIN_2B
     },
     /* CONFIG_GPTIMER_0, used by CONFIG_PWM_0 */
     /* LaunchPad LED Green */
     {
-        .baseAddr = GPT0_BASE,
-        .intNum      = INT_GPT0B,
+        .baseAddr = GPT1_BASE,
+        .intNum      = INT_GPT1A,
         .intPriority = (~0),
-        .powerMngrId = PowerCC26XX_PERIPH_GPT0,
-        .pinMux      = GPT_PIN_0B
+        .powerMngrId = PowerCC26XX_PERIPH_GPT1,
+        .pinMux      = GPT_PIN_1A
     },
 };
 
@@ -726,16 +749,23 @@ const GPTimerCC26XX_Config GPTimerCC26XX_config[CONFIG_GPTIMER_COUNT] = {
         .hwAttrs   = &gptimerCC26XXHWAttrs[CONFIG_GPTIMER_1],
         .timerPart = GPT_A
     },
+    /* CONFIG_GPTIMER_2 */
+    {
+        .object    = &gptimerCC26XXObjects[CONFIG_GPTIMER_2],
+        .hwAttrs   = &gptimerCC26XXHWAttrs[CONFIG_GPTIMER_2],
+        .timerPart = GPT_B
+    },
     /* CONFIG_GPTIMER_0 */
     /* LaunchPad LED Green */
     {
         .object    = &gptimerCC26XXObjects[CONFIG_GPTIMER_0],
         .hwAttrs   = &gptimerCC26XXHWAttrs[CONFIG_GPTIMER_0],
-        .timerPart = GPT_B
+        .timerPart = GPT_A
     },
 };
 
 const uint_least8_t CONFIG_GPTIMER_1_CONST = CONFIG_GPTIMER_1;
+const uint_least8_t CONFIG_GPTIMER_2_CONST = CONFIG_GPTIMER_2;
 const uint_least8_t CONFIG_GPTIMER_0_CONST = CONFIG_GPTIMER_0;
 const uint_least8_t GPTimer_count = CONFIG_GPTIMER_COUNT;
 

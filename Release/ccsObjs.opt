@@ -19,6 +19,7 @@
 "./Application/snv_internal.o"
 "./Drivers/NV/crc.o"
 "./Drivers/NV/nvocmp.o"
+"./Hardware/ESCOOTER_BOOT.o"
 "./Hardware/IS31FL3236A.o"
 "./Hardware/STM32MCP.o"
 "./Hardware/STM32MCP_util.o"

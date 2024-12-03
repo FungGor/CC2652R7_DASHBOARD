@@ -59,9 +59,9 @@ void UDHAL_GPIO_params_init()
     /* config & turn on RED LED for testing */
     GPIO_write(CONFIG_GPIO_LED_0, CONFIG_GPIO_LED_ON);
 
-    GPIO_setConfig(CONFIG_GPIO_BTN1,  GPIO_CFG_IN_PU | GPIO_CFG_IN_INT_BOTH_EDGES);    //
-    GPIO_setCallback(CONFIG_GPIO_BTN1, &UDHAL_GPIO_InterruptFxn);                      // GPIO Callback -> pin -> interrupt function
-    GPIO_enableInt(CONFIG_GPIO_BTN1);
+    GPIO_setConfig(CONFIG_GPIO_BTN2,  GPIO_CFG_IN_PU | GPIO_CFG_IN_INT_BOTH_EDGES);    //
+    GPIO_setCallback(CONFIG_GPIO_BTN2, &UDHAL_GPIO_InterruptFxn);                      // GPIO Callback -> pin -> interrupt function
+    GPIO_enableInt(CONFIG_GPIO_BTN2);
 
 #ifdef veml6030
     // ALS_control_getIntR();
@@ -127,10 +127,10 @@ void UDHAL_GPIO_InterruptFxn(uint_least8_t index)
    uint_fast8_t logicLevel;
    switch(index)
    {
-   case CONFIG_GPIO_BTN1:
+   case CONFIG_GPIO_BTN2:
    {
        //uint_fast8_t
-       logicLevel = UDHAL_GPIO_read(CONFIG_GPIO_BTN1);
+       logicLevel = UDHAL_GPIO_read(CONFIG_GPIO_BTN2);
        mpb_processButtonEvt(logicLevel);
        break;
    }
@@ -148,6 +148,3 @@ void UDHAL_GPIO_InterruptFxn(uint_least8_t index)
        break;
    }
 }
-
-
-

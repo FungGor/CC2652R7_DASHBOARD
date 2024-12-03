@@ -97,13 +97,13 @@ static uint16_t UDIndex;                     // the last UDIndex saved
 static uint16_t UDIndexPrev;
 
 static float    lenConvFactorDash;
-static uint8_t  batteryStatus;
+uint8_t  batteryStatus;
 uint16_t avgBatteryVoltage_mV = BATTERY_NOMINAL_VOLTAGE;
 uint16_t avgBusCurrent_mA = 0;
 uint16_t avgPhaseVoltage_mV;
 uint16_t avgPhaseCurrent_mA;
 static uint8_t  avgBatteryPercent = BATTERY_PERCENTAGE_INITIAL;
-static bool     batteryLow = 0;
+static uint8_t     batteryLow = 0;
 
 /**************************************/
 //static uint8_t heatSinkOVTempState = 0;
@@ -181,8 +181,8 @@ extern void data_analytics_MCUDArrayRegister(MCUD_t (*ptrMCUD))
  *
  * @return  None
  */
-static bool *ptr_da_POWER_ON;
-extern void da_powerOnRegister(bool *ptrpoweron)
+static uint8_t *ptr_da_POWER_ON;
+extern void da_powerOnRegister(uint8_t *ptrpoweron)
 {
     ptr_da_POWER_ON = ptrpoweron;
 }
@@ -238,13 +238,24 @@ extern void data_analytics_init()
      * At the instant of POWER ON, retrieve BATTERY status for LED display
      * dashboard will instruct motor controller to obtain a battery voltage and current measurement
      */
-    //STM32MCP_getRegisterFrame(STM32MCP_MOTOR_1_ID,STM32MCP_BUS_VOLTAGE_REG_ID);
+#ifdef MOTOR_CONNECT
+    STM32MCP_getRegisterFrame(STM32MCP_MOTOR_1_ID,STM32MCP_BUS_VOLTAGE_REG_ID);
     uint16_t batteryVoltageStartUp_mV = ptr_MCUDArray->bat_voltage_mV;    //36000;
     uint16_t batteryCurrentStartUp_mA = ptr_MCUDArray->bat_current_mA;    // 3000;            // -> STM32MCP_getRegisterFrame(STM32MCP_MOTOR_1_ID,STM32MCP_BUS_CURRENT_REG_ID);
     uint16_t phaseVoltageStartUp_mV = ptr_MCUDArray->phase_voltage_mV;    //36000;
     uint16_t phaseCurrentStartUp_mA = ptr_MCUDArray->phase_current_mA;    // 3000;            // -> STM32MCP_getRegisterFrame(STM32MCP_MOTOR_1_ID,STM32MCP_BUS_CURRENT_REG_ID);
     uint8_t mTStartUp = ptr_MCUDArray->motorTempOffset50_Celcius;       //15+50;                  // -> STM32MCP_getRegisterFrame(STM32MCP_MOTOR_1_ID,STM32MCP_BUS_MOTORTEMPERATURE_REG_ID);
     uint8_t hSTStartUp = ptr_MCUDArray->heatSinkTempOffset50_Celcius;   //15+50;              // -> STM32MCP_getRegisterFrame(STM32MCP_MOTOR_1_ID,STM32MCP_BUS_HEATSINKTEMPERATURE_REG_ID);
+#endif // MOTOR_CONNECT
+
+#ifndef MOTOR_CONNECT   // if MOTOR_CONNECT not defined --> use dummy data
+    uint16_t batteryVoltageStartUp_mV = LEVEL45;
+    uint16_t batteryCurrentStartUp_mA = 3000;
+    uint16_t phaseVoltageStartUp_mV = 30000;
+    uint16_t phaseCurrentStartUp_mA = 3000;
+    uint8_t mTStartUp = 65;                     //temperature + offset = 15+50;
+    uint8_t hSTStartUp = 65;                    //temperature + offset = 15+50;
+#endif // MOTOR_CONNECT
 
     /* Initialize the following arrays:
      * RPM,
@@ -296,7 +307,6 @@ extern void data_analytics_init()
     ADArray.range_m = computeRange();                                       // ADArray = App data strut
     ADArray.co2Saved_g = computeCO2Saved();                                 // ADArray = App data strut
     ADArray.motorTempOffset50_C = computeMotorTemperature();                // ADArray = App data strut
-
 
     data_analytics_changeUnitSelectDash();      // Send Initial Unit Select to LED display
 
@@ -713,7 +723,7 @@ static void computeAvgCurrents()
 ******************************************************************************************************/
 uint8_t computeBatteryPercentage()
 {
-    avgBatteryPercent = 0;
+//    avgBatteryPercent = 0;
     int16_t     instantBatteryLevel = 0;
     uint16_t     sumBatteryLevel = 0;
 
@@ -821,7 +831,7 @@ uint32_t computeEconomy()
         overall_economy_100Whpk = 50000;
         return overall_economy_100Whpk;
     }
-    return (overall_economy_100Whpk);                                 // Unit in W-hr / km x 100    -> convert to the desired unit before displaying on App
+    return (overall_economy_100Whpk);  // Unit in W-hr / km x 100    -> convert to the desired unit before displaying on App
 }
 
 /***************************************************************************************************
@@ -839,11 +849,11 @@ uint32_t computeRange()
     if (ADArray.economy_100Whpk <= 0)
     {                     // Safeguard from stack overflow due to division by 0
         range_m = 0;
-        return range_m;                                     // output in meters  -> convert to the desired unit before displaying on App
+        return range_m;   // output in meters  -> convert to the desired unit before displaying on App
     }                                                       // output in meters
     range_m = ((float) ADArray.batteryPercentage * BATTERY_MAX_CAPACITY * BCF / ADArray.economy_100Whpk );
 
-    return (range_m);                                         // output in metres  -> convert to the desired unit before displaying on App
+    return (range_m);     // output in metres  -> convert to the desired unit before displaying on App
 }
 /******************************************************************************************************
  * @fn      computeCO2Saved
@@ -893,7 +903,7 @@ extern void data2snvBuffer()
 
     (*ptr_snvBuffer)[SNV_BUFFER_SIZE - 4] = brake_and_throttle_getSpeedMode();
     (*ptr_snvBuffer)[SNV_BUFFER_SIZE - 3] = UnitSelectDash;
-    (*ptr_snvBuffer)[SNV_BUFFER_SIZE - 2] = *ptr_lightmode;
+    (*ptr_snvBuffer)[SNV_BUFFER_SIZE - 2] = LIGHT_MODE_AUTO;
     (*ptr_snvBuffer)[SNV_BUFFER_SIZE - 1] = *ptr_uptimeMinutes;
 
     /******************************************************************************************************

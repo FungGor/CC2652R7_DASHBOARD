@@ -62,19 +62,19 @@ extern "C"
 
 //Throttle calibration values = value range the throttle ADC is conditioned to be within
 #define THROTTLE_ADC_CALIBRATE_H                                  2300
-#define THROTTLE_ADC_CALIBRATE_L                                  830
+#define THROTTLE_ADC_CALIBRATE_L                                  850   // must be greater than min ADC value
 
 //Throttle error thresholds = values that should not be possible under nominal operation
 #define THROTTLE_ADC_THRESHOLD_H                                  2700
-#define THROTTLE_ADC_THRESHOLD_L                                  700
+#define THROTTLE_ADC_THRESHOLD_L                                  700   // must be less than min ADC value
 
 //Brake calibration values = value range the Brake ADC is conditioned to be within
 #define BRAKE_ADC_CALIBRATE_H                                     2300
-#define BRAKE_ADC_CALIBRATE_L                                     830
+#define BRAKE_ADC_CALIBRATE_L                                     830   // must be greater than min ADC value
 
 //Brake error thresholds = values that should not be possible under nominal operation
 #define BRAKE_ADC_THRESHOLD_H                                     2700
-#define BRAKE_ADC_THRESHOLD_L                                     700
+#define BRAKE_ADC_THRESHOLD_L                                     700   // must be less than min ADC value
 
 //Error message
 #define BRAKE_AND_THROTTLE_NORMAL                                 0x00

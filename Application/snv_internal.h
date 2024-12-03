@@ -57,7 +57,6 @@ extern uint8_t snv_internal_getInitSpeedMode(void);
 extern uint8_t snv_internal_getInitLightMode(void);
 extern uint8_t snv_internal_getInitLightMode(void);
 extern void* snv_internal_setReadBuffer(uint32_t (*ptr_snvBuffer)[]);
-//extern void* snv_internal_getUDBuffer();
 
 
 #ifdef _cplusplus

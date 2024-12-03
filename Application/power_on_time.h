@@ -52,10 +52,11 @@ extern "C"
 extern void power_on_time_init();
 extern void power_on_time_createTask(void);
 extern uint16_t power_on_time_getPowerOnTime();
-extern void pot_powerOnRegister(bool *ptr_powerOn);
+extern void pot_powerOnRegister(uint8_t *ptr_powerOn);
 extern void pot_setDeviceUpTime(uint32_t uptimeMinutes);
 extern void pot_InitComplFlagRegister(uint8_t *ptr_initComplete_flag);
 extern void* pot_uptimeMinute();
+extern void pot_snvWriteCompleteFlag_register(uint8_t *ptr_snvWriteComplete_flag);
 
 #ifdef __cplusplus
 }

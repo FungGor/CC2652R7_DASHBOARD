@@ -98,14 +98,17 @@ extern const uint_least8_t CONFIG_GPIO_ADC_THR_AIN_CONST;
 extern const uint_least8_t CONFIG_GPIO_ADC_BRK_AIN_CONST;
 #define CONFIG_GPIO_ADC_BRK_AIN 23
 
-extern const uint_least8_t CONFIG_GPIO_BTN1_CONST;
-#define CONFIG_GPIO_BTN1 13
+extern const uint_least8_t CONFIG_GPIO_BTN2_CONST;
+#define CONFIG_GPIO_BTN2 14
 
 extern const uint_least8_t CONFIG_GPIO_LED_0_CONST;
 #define CONFIG_GPIO_LED_0 6
 
 extern const uint_least8_t CONFIG_GPIO_0_CONST;
 #define CONFIG_GPIO_0 0
+
+extern const uint_least8_t CONFIG_GPIO_1_CONST;
+#define CONFIG_GPIO_1 1
 
 /* Owned by CONFIG_I2C as  */
 extern const uint_least8_t CONFIG_GPIO_I2C_SDA_CONST;
@@ -118,6 +121,10 @@ extern const uint_least8_t CONFIG_GPIO_I2C_SCL_CONST;
 /* Owned by CONFIG_GPTIMER_1 as  */
 extern const uint_least8_t CONFIG_GPIO_PWM_1_CONST;
 #define CONFIG_GPIO_PWM_1 12
+
+/* Owned by CONFIG_GPTIMER_2 as  */
+extern const uint_least8_t CONFIG_GPIO_PWM_2_CONST;
+#define CONFIG_GPIO_PWM_2 28
 
 /* Owned by UART2 as  */
 extern const uint_least8_t CONFIG_GPIO_UART2_TX_CONST;
@@ -186,7 +193,10 @@ extern const uint_least8_t              CONFIG_PWM_0_CONST;
 /* DIO12 */
 extern const uint_least8_t              CONFIG_PWM_1_CONST;
 #define CONFIG_PWM_1                    1
-#define CONFIG_TI_DRIVERS_PWM_COUNT     2
+/* DIO28 */
+extern const uint_least8_t              CONFIG_PWM_2_CONST;
+#define CONFIG_PWM_2                    2
+#define CONFIG_TI_DRIVERS_PWM_COUNT     3
 
 
 
@@ -220,9 +230,11 @@ extern const uint_least8_t                  UART2_CONST;
 
 extern const uint_least8_t                  CONFIG_GPTIMER_1_CONST;
 #define CONFIG_GPTIMER_1                    0
+extern const uint_least8_t                  CONFIG_GPTIMER_2_CONST;
+#define CONFIG_GPTIMER_2                    1
 extern const uint_least8_t                  CONFIG_GPTIMER_0_CONST;
-#define CONFIG_GPTIMER_0                    1
-#define CONFIG_TI_DRIVERS_GPTIMER_COUNT     2
+#define CONFIG_GPTIMER_0                    2
+#define CONFIG_TI_DRIVERS_GPTIMER_COUNT     3
 
 
 /*
