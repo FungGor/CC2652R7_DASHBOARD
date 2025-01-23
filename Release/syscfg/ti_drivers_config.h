@@ -124,7 +124,7 @@ extern const uint_least8_t CONFIG_GPIO_PWM_1_CONST;
 
 /* Owned by CONFIG_GPTIMER_2 as  */
 extern const uint_least8_t CONFIG_GPIO_PWM_2_CONST;
-#define CONFIG_GPIO_PWM_2 28
+#define CONFIG_GPIO_PWM_2 30
 
 /* Owned by UART2 as  */
 extern const uint_least8_t CONFIG_GPIO_UART2_TX_CONST;
@@ -193,7 +193,7 @@ extern const uint_least8_t              CONFIG_PWM_0_CONST;
 /* DIO12 */
 extern const uint_least8_t              CONFIG_PWM_1_CONST;
 #define CONFIG_PWM_1                    1
-/* DIO28 */
+/* DIO30 */
 extern const uint_least8_t              CONFIG_PWM_2_CONST;
 #define CONFIG_PWM_2                    2
 #define CONFIG_TI_DRIVERS_PWM_COUNT     3

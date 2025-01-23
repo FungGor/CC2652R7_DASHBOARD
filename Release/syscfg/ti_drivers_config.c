@@ -323,10 +323,10 @@ GPIO_PinConfig gpioPinConfigs[31] = {
     GPIO_CFG_NO_DIR, /* DIO_25 */
     GPIO_CFG_NO_DIR, /* DIO_26 */
     GPIO_CFG_NO_DIR, /* DIO_27 */
+    GPIO_CFG_NO_DIR, /* DIO_28 */
+    GPIO_CFG_NO_DIR, /* DIO_29 */
     /* Owned by CONFIG_GPTIMER_2 as PWM Pin */
     GPIO_CFG_OUTPUT_INTERNAL | GPIO_CFG_OUT_STR_MED | GPIO_CFG_OUT_LOW, /* CONFIG_GPIO_PWM_2 */
-    GPIO_CFG_NO_DIR, /* DIO_29 */
-    GPIO_CFG_NO_DIR, /* DIO_30 */
 };
 
 /*
@@ -714,28 +714,28 @@ GPTimerCC26XX_Object gptimerCC26XXObjects[CONFIG_GPTIMER_COUNT];
 const GPTimerCC26XX_HWAttrs gptimerCC26XXHWAttrs[CONFIG_GPTIMER_COUNT] = {
     /* CONFIG_GPTIMER_1, used by CONFIG_PWM_1 */
     {
+        .baseAddr = GPT0_BASE,
+        .intNum      = INT_GPT0A,
+        .intPriority = (~0),
+        .powerMngrId = PowerCC26XX_PERIPH_GPT0,
+        .pinMux      = GPT_PIN_0A
+    },
+    /* CONFIG_GPTIMER_2, used by CONFIG_PWM_2 */
+    {
         .baseAddr = GPT2_BASE,
         .intNum      = INT_GPT2A,
         .intPriority = (~0),
         .powerMngrId = PowerCC26XX_PERIPH_GPT2,
         .pinMux      = GPT_PIN_2A
     },
-    /* CONFIG_GPTIMER_2, used by CONFIG_PWM_2 */
+    /* CONFIG_GPTIMER_0, used by CONFIG_PWM_0 */
+    /* LaunchPad LED Green */
     {
         .baseAddr = GPT2_BASE,
         .intNum      = INT_GPT2B,
         .intPriority = (~0),
         .powerMngrId = PowerCC26XX_PERIPH_GPT2,
         .pinMux      = GPT_PIN_2B
-    },
-    /* CONFIG_GPTIMER_0, used by CONFIG_PWM_0 */
-    /* LaunchPad LED Green */
-    {
-        .baseAddr = GPT1_BASE,
-        .intNum      = INT_GPT1A,
-        .intPriority = (~0),
-        .powerMngrId = PowerCC26XX_PERIPH_GPT1,
-        .pinMux      = GPT_PIN_1A
     },
 };
 
@@ -753,14 +753,14 @@ const GPTimerCC26XX_Config GPTimerCC26XX_config[CONFIG_GPTIMER_COUNT] = {
     {
         .object    = &gptimerCC26XXObjects[CONFIG_GPTIMER_2],
         .hwAttrs   = &gptimerCC26XXHWAttrs[CONFIG_GPTIMER_2],
-        .timerPart = GPT_B
+        .timerPart = GPT_A
     },
     /* CONFIG_GPTIMER_0 */
     /* LaunchPad LED Green */
     {
         .object    = &gptimerCC26XXObjects[CONFIG_GPTIMER_0],
         .hwAttrs   = &gptimerCC26XXHWAttrs[CONFIG_GPTIMER_0],
-        .timerPart = GPT_A
+        .timerPart = GPT_B
     },
 };
 

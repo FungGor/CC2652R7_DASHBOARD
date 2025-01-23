@@ -93,12 +93,12 @@ extern void snv_internal_resetSNVdata()
      *  UDBuffer[1] store the UDCounter, which is the number of UDTrigger
      *  UDBuffer[2] to UDbuffer[N - 7] stores the previous 10 Accumulated Distance traveled and Accumulated Energy Consumed data
      *  UDBuffer[N - 6] to UDbuffer[N - 5] stores a pair of codes for triggering reset
-     *  UDBuffer[N - 6] has a value of RESETCODE01
-     *  UDbuffer[N - 5] has a value of RESETCODE02
+     *    -  UDBuffer[N - 6] has a value of RESETCODE01
+     *    -  UDbuffer[N - 5] has a value of RESETCODE02
      *  UDBuffer[N - 4] stores the selected speed mode
      *  UDBuffer[N - 3] stores the selected dashboard unit
      *  UDBuffer[N - 2] stores the selected light mode
-     *  UDBuffer[N - 1] is reserved and current not in use
+     *  UDBuffer[N - 1] stores device uptime
      *
      **/
 
@@ -147,10 +147,10 @@ extern void snv_internal_resetSNVdata()
         UDBuffer[26] = RESETCODE01;        // reset code 1
         UDBuffer[27] = RESETCODE02;        // reset code 2
 
-        UDBuffer[28] = 0;        // speed mode {0 = Amble, 1 = Leisure, 2 = Sports}
-        UDBuffer[29] = 0;        // dashboard unit {0 = kmph, 1 = mph}
-        UDBuffer[30] = 2;        // light mode {0 = Off, 1 = On, 2 = Auto}
-        UDBuffer[31] = 99;        // device uptime
+        UDBuffer[28] = 0;        // 28. speed mode {0 = Amble, 1 = Leisure, 2 = Sports}
+        UDBuffer[29] = 0;        // 29. dashboard unit {0 = kmph, 1 = mph}
+        UDBuffer[30] = 2;        // 30. light mode {0 = Off, 1 = On, 2 = Auto}
+        UDBuffer[31] = 99;       // 31. device uptime
 
 #endif  // DUMMY_NVS
 

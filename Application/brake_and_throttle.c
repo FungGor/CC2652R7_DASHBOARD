@@ -43,6 +43,9 @@ uint8_t     ControlLaw = BRAKE_AND_THROTTLE_DIRECTLAW;
  *  (2) BRAKE_AND_THROTTLE_DIRECTLAW
 */
 
+// Power On Status Variable
+static uint8_t     *ptr_bat_POWER_ON;
+
 uint8_t     speedMode;
 
 uint16_t    adcValues[2];
@@ -410,18 +413,18 @@ void brake_and_throttle_ADC_conversion()
     RPM_temp = ptr_bat_MCUDArray->speed_rpm;            //
 
     /******** compute drpm / dIQ  -  For studying purposes only   **********/
-    drpm = (RPM_temp - RPM_prev);
-    dIQ = (IQ_applied - IQapp_prev);
-    if (((IQ_applied - IQapp_prev) == 0) || ((RPM_temp - RPM_prev)/(IQ_applied - IQapp_prev) >= 0xFFFF) ||
-            ((RPM_temp - RPM_prev)/(IQ_applied - IQapp_prev) <= -0xFFFF))
-    {
-        drpmdIQ = 0;
-    }
-    else
-    {
-        drpmdIQ = (float)(RPM_temp - RPM_prev)/(IQ_applied - IQapp_prev);
-    }
-    IQapp_prev = IQ_applied;                            // for studying purposes only
+//    drpm = (RPM_temp - RPM_prev);
+//    dIQ = (IQ_applied - IQapp_prev);
+//    if (((IQ_applied - IQapp_prev) == 0) || ((RPM_temp - RPM_prev)/(IQ_applied - IQapp_prev) >= 0xFFFF) ||
+//            ((RPM_temp - RPM_prev)/(IQ_applied - IQapp_prev) <= -0xFFFF))
+//    {
+//        drpmdIQ = 0;
+//    }
+//    else
+//    {
+//        drpmdIQ = (float)(RPM_temp - RPM_prev)/(IQ_applied - IQapp_prev);
+//    }
+//    IQapp_prev = IQ_applied;                            // for studying purposes only
 
     /******** End compute drpm / dIQ  -  For investigation only   **********/
 
@@ -435,7 +438,7 @@ void brake_and_throttle_ADC_conversion()
      **********************************************************************************/
 //    throttlePercent = 30;// dummy throttle percent for testing
 
-    /**       if rpm is positive       and   if error is not fatal or critical errors  **/
+    /**       if rpm is positive       and   if error is not fatal or critical errors           or power on != 0    **/
     if ((ptr_bat_MCUDArray->rpm_status) && (*ptr_bat_errorPriority >= BRAKE_ERROR_PRIORITY))
     {
         if ((brakeStatus) || (RPM_temp < REG_MINP_RPM))
@@ -476,14 +479,14 @@ void brake_and_throttle_ADC_conversion()
     /***** End Normal Law *************************************/
 
     }
-    else   /** if rpm is negative or if error is fatal or critical errors  **/
+    else   /** if rpm is negative, or if error is fatal or critical errors, or power on = 0 **/
     {
         IQ_input = 0;
         IQ_applied = IQ_input;
     }
 
     /********************************************************************************************************************************
-     * Update IQ_applied to STM32MCPDArray.IQ_value fot commanding Motor via motor controller
+     * Update IQ_applied to STM32MCPDArray.IQ_value for commanding Motor via motor controller
      ********************************************************************************************************************************/
     ptr_bat_STM32MCPDArray->IQ_value = IQ_applied;
 
@@ -671,6 +674,24 @@ extern void brake_and_throttle_getSpeedModeParams()
     led_display_setSpeedMode(speedMode);    // update led display
     /******  Dashboard services *************************************/
     /* updates speed mode Characteristic Value -> Mobile App */
+    bat_dashboard_speedmode_service();
+//    ptr_charVal = (ptr_bat_profileCharVal->ptr_dash_charVal->ptr_speedMode);  // obsolette.  remove after testing complete
+//    profile_setCharVal(ptr_charVal, DASHBOARD_SPEED_MODE_LEN, speedMode);  // obsolette.  remove after testing complete
+}
+
+/*********************************************************************
+ * @fn      bat_dashboard_speedmode_service
+ *
+ * @brief   Dashboard services updates speed mode Characteristic Value to Mobile App
+ *
+ * @param   none
+ *
+ * @return  none
+ */
+extern void bat_dashboard_speedmode_service()
+{
+    /******  Dashboard services *************************************/
+    /* updates speed mode Characteristic Value -> Mobile App */
     ptr_charVal = (ptr_bat_profileCharVal->ptr_dash_charVal->ptr_speedMode);
     profile_setCharVal(ptr_charVal, DASHBOARD_SPEED_MODE_LEN, speedMode);
 }
@@ -707,6 +728,9 @@ uint8_t brake_and_throttle_toggleSpeedMode()
                     allowableRPM = BRAKE_AND_THROTTLE_MAXSPEED_LEISURE;
                 }
                 rampRate = BRAKE_AND_THROTTLE_RAMPRATE_LEISURE;
+
+
+
             }
             else if(speedMode == BRAKE_AND_THROTTLE_SPEED_MODE_LEISURE) // if Leisure mode, change to Sports mode
             {
@@ -737,6 +761,9 @@ uint8_t brake_and_throttle_toggleSpeedMode()
                     allowableRPM = BRAKE_AND_THROTTLE_MAXSPEED_AMBLE;
                 }
                 rampRate = BRAKE_AND_THROTTLE_RAMPRATE_AMBLE;
+
+
+
             }
         }
     }
@@ -756,6 +783,9 @@ uint8_t brake_and_throttle_toggleSpeedMode()
                 allowableRPM = BRAKE_AND_THROTTLE_MAXSPEED_AMBLE;
             }
             rampRate = BRAKE_AND_THROTTLE_RAMPRATE_AMBLE;
+
+
+
         }
     }
 
@@ -776,8 +806,9 @@ uint8_t brake_and_throttle_toggleSpeedMode()
 
     /******  Dashboard services *************************************/
     /* updates speed mode Characteristic Value -> Mobile App */
-    ptr_charVal = (ptr_bat_profileCharVal->ptr_dash_charVal->ptr_speedMode);
-    profile_setCharVal(ptr_charVal, DASHBOARD_SPEED_MODE_LEN, speedMode);
+    bat_dashboard_speedmode_service();
+//    ptr_charVal = (ptr_bat_profileCharVal->ptr_dash_charVal->ptr_speedMode);  // obsolette.  remove after testing complete
+//    profile_setCharVal(ptr_charVal, DASHBOARD_SPEED_MODE_LEN, speedMode);     // obsolette.  remove after testing complete
 
     return (speedMode);
 }
@@ -880,3 +911,48 @@ extern uint8_t* bat_dashboardErrorCodePriorityRegister()
     return (&dashboardErrorCodePriority);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*********************************************************************
+ * @fn      bat_powerOnRegister
+ *
+ * @brief   call to assign and register the pointer to powerOn
+ *
+ * @param   a pointer to powerOn, i.e. ptr_powerOn
+ *
+ * @return  None
+ */
+extern void bat_powerOnRegister(uint8_t *ptrpowerOn)
+{
+    ptr_bat_POWER_ON = ptrpowerOn;
+}
+
+/*********************************************************************
+ * @fn      bat_sendIQZero
+ *
+ * @brief   call at Power Off to send IQ = 0 to motor controller
+ *
+ * @param   None
+ *
+ * @return  None
+ */
+extern void bat_zeroIQ()
+{
+    IQ_input = 0;
+    IQ_applied = IQ_input;
+    /********************************************************************************************************************************
+    * Update IQ_applied to STM32MCPDArray.IQ_value for commanding Motor via motor controller
+    ********************************************************************************************************************************/
+    ptr_bat_STM32MCPDArray->IQ_value = IQ_applied;
+}

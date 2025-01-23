@@ -18,6 +18,7 @@ extern "C"
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <ti/sysbios/knl/Task.h>
 
 #include "Hardware/gGo_device_params.h"
 /*********************************************************************
@@ -25,6 +26,9 @@ extern "C"
 */
 #define LED_POWER_LIGHT_ON                          1
 #define LED_POWER_LIGHT_OFF                         0
+
+#define LEDSPEED_LOWCOUNT                           5
+#define LEDSPEED_HIGHCOUNT                          16
 
 /* ********************************************************************
  * TYPEDEFS
@@ -88,6 +92,8 @@ extern void led_display_changeLightStatus();
 extern void led_display_setLEDPower( uint8_t ledPower );                 // Set LED Power Level / Brightness
 extern void led_display_changeLEDPower();
 extern void* led_display_errorPriorityRegister();
+static void led_display_speedModeLockStatus();
+extern void* led_display_speedmodeIsLockRegister();
 
 extern void led_display_opcodeRegister( uint8_t *ptr_opcode );
 extern void led_display_advertiseFlagRegister(uint8_t *ptr_advertiseFlag);

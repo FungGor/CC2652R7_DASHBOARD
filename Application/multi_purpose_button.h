@@ -57,6 +57,8 @@ extern "C"
 #define  MPB_DOUBLE_SHORT_PRESS_MSG       0x04
 #define  MPB_TREBLE_SHORT_PRESS_MSG       0x05
 #define  MPB_QUADRUPLE_SHORT_PRESS_MSG    0x06
+#define  MPB_DOUBLE_SHORT_LONG_PRESS_MSG  0x07
+#define  MPB_TREBLE_SHORT_LONG_PRESS_MSG  0x08
 #define  MPB_UNDEFINED_MSG                0x00
 
 /*********************************************************************
@@ -96,7 +98,6 @@ typedef struct {
  */
 /* Task creation function for the multi-purpose button */
 extern void mpb_createTask(void);
-
 extern void mpb_registerTimer(mpb_timerManager_t *mpbTimer);//Register in peripherals already
 //extern void mpb_registerCBs(mpbCBs_t *mpbCBs);//Register in main function.
 extern void mpb_processButtonEvt(uint_fast8_t logicLevel);
@@ -104,11 +105,10 @@ extern void mpb_processTimerOv();
 extern void mpb_bootAlarm(uint16_t duration, uint8_t bootcase);
 extern void *mpb_registeropcode(uint8_t *ptr_opcode, uint8_t *ptr_advertiseFlag);
 extern void *mpb_powerOnRegister(void);
+extern void mpb_speedmodeLockStatusRegister(uint8_t *ptrSpeedmodeLockStatus);
 
 #ifdef _cplusplus
 }
 #endif
-
-
 
 #endif /* APPLICATION_MULTI_PURPOSE_BUTTON_H_ */

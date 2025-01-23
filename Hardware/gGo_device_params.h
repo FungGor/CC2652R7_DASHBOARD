@@ -1,6 +1,7 @@
 /*
  *  gGo_device_params.h
  *
+ *
  *  Created on: 4 May 2024
  *      Author: Chee
  */
@@ -21,14 +22,15 @@ extern "C"
 // *  Battery Option
 // *********************************************************************************************/
 #include "Hardware/battery_params.h"
-
 #define CC2652R7_LAUNCHXL               1
-
-///*********************************************************************************************
-// *  Ambient Light Sensor Chip Option
-// *********************************************************************************************/
-#define veml6030            1
-//#define veml3235            1
+/*********************************************************************
+ * CONSTANTS
+ */
+// Device Information
+#define DEVICE_MODEL_NUMBER     "Genev gGO ES01"
+#define DEVICE_SERIAL_NUMBER    "MSN T00001"
+#define FIRMWARE_REVISION       "ES01.0.V01.R00"
+#define MANUFACTURER_NAME       "Genev"
 
 /*********************************************************************************************
  *  Regional / Regulation Options
@@ -39,6 +41,20 @@ extern "C"
 #undef  REGION3                                     // Japan
 #undef  REGION4                                     // Australia
 #undef  REGION5                                     // Canada, USA
+
+
+
+
+
+
+
+///*********************************************************************************************
+// *  Ambient Light Sensor Chip Option
+// *********************************************************************************************/
+#define veml6030            1
+//#define veml3235            1
+
+
 
 /******   CONSTANTS   *******/
 #define PI_CONSTANT                         3.14159265359
@@ -87,6 +103,7 @@ extern "C"
  *********************************************************************************************/
 #define LUXTHRESHOLD                   500  // light shall be ON when light intensity is consistently below this lux value
 
+
 /*********************************************************************************************
  *  Error Priorities and Codes
  *********************************************************************************************/
@@ -122,14 +139,12 @@ extern "C"
 #define SOFTWARE_ERROR_PRIORITY                         0X12
 
 // Warnings
-#define BATTERY_CRITICALLY_LOW_WARNING                  0x20    // 32:Battery level critically low warning
+#define BATTERY_CRITICALLY_LOW_PRIORITY                  0x20    // 32:Battery level critically low priority
 
 /*********************************************************************************************/
 /**  LED Display and MOBILE APP Error Codes  **/
 /*********************************************************************************************/
 #define SYS_NORMAL_CODE                                 0xFF
-
-#define SYS_FATAL_ERROR_CODE                            0x0F
 
 #define BATTERY_VOLTAGE_ERROR_CODE                      0x1A    // check that the e-scooter has not been connected with an incorrect battery rating. Restart (Power off, wait for 10 seconds and power on again)
 #define BATTERY_TEMP_ERROR_CODE                         0x1A    // no battery temperature sensor at present.   The e-scooter's throttle response will automatically unlock when temp drop below the pre-set value.
@@ -143,9 +158,9 @@ extern "C"
 #define MOTOR_TEMP_ERROR_CODE                           0x3C    // Let it cool before use again.   The e-scooter's throttle response will automatically unlock when temp drop below the pre-set value.
 #define DASH_COMM_ERROR_CODE                            0x0A    // Restart, contact genev technical / customer services or approved distributor for inspection and repair
 #define THROTTLE_ERROR_CODE                             0x0C    // check throttle connection with Dashboard.  Restart, contact genev technical / customer services or approved distributor for inspection and repair in problem persists.
-
 #define BRAKE_ERROR_CODE                                0x0E    // check brake connection with Dashboard.  Restart, contact genev technical / customer services or approved distributor for inspection and repair in problem persists.
-#define SOFTWARE_ERROR_CODE                             0x4A    // Restart, contact genev technical / customer services or approved distributor for inspection and repair in problem persists.
+
+#define SYS_FATAL_ERROR_CODE                            0x0F    // Restart, contact genev technical / customer services or approved distributor for inspection and repair in problem persists.
 
 /*********************************************************************************************
  *  Regional / Regulation Settings

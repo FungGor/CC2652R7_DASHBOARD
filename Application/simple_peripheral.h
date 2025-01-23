@@ -66,7 +66,9 @@ extern "C"
  * CONSTANTS
  */
 // periodic event time interval (in ms) - the interval between BLE refresh/updates. 6 (Strava) to 10 seconds are common.
-#define SP_PERIODIC_EVT_PERIOD               6000
+#define SP_PERIODIC_EVT_PERIOD               750
+#define SP_PERIODIC_EVT_COUNT                8
+
 
 // Task configuration
 #define SP_TASK_PRIORITY                     1
@@ -76,15 +78,21 @@ extern "C"
 #endif
 
 /***** when RESET_NVS is defined, the firmware will reset snv_internal_80 to the define reset values at every startup ***/
-#define RESET_NVS                            1
+#define RESET_NVS                            1      //reset only if reset password does not match
+#ifndef RESET_NVS
 //#undef RESET_NVS
-//#define OVERRIDE_NVS                         1
+#endif // RESET_NVS
+
+//#define OVERRIDE_NVS                         1      // hard reset of snv data
+#ifndef OVERRIDE_NVS
 #undef OVERRIDE_NVS
+#endif // OVERRIDE_NVS
+
 #define ZERO_NVS                             1      // when defined -> reset to zeros and override check code
-//#undef ZERO_NVS
 #ifndef ZERO_NVS
+#undef ZERO_NVS
 #define DUMMY_NVS                            1    // when ZERO_NVS not defined -> reset to dummy data with override check code
-#endif
+#endif // ZERO_NVS
 
 #define SP_ADVERTISING_TIMEOUT               2000  // each tick is in 10 ms, hence 3000 x 10 ms = 30 seconds
 

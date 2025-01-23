@@ -36,10 +36,19 @@ static void UDHAL_UART_open();
 static void UDHAL_UART_read(uint8_t *message, uint8_t size);
 static void UDHAL_UART_write(uint8_t *message, uint8_t size);
 static void UDHAL_UART_close();
-static UART2_Callback UDHAL_readCallback(UART2_Handle UART2_handle, void *rxBuf, size_t size,
+//static UART2_Callback UDHAL_readCallback(UART2_Handle UART2_handle, void *rxBuf, size_t size,
+//                                         void *userArg, int_fast16_t status);
+static void UDHAL_readCallback(UART2_Handle UART2_handle, void *rxBuf, size_t size,
                                          void *userArg, int_fast16_t status);
-static UART2_Callback UDHAL_writeCallback(UART2_Handle UART2_handle, void *rxBuf, size_t size,
+
+//static UART2_Callback UDHAL_writeCallback(UART2_Handle UART2_handle, void *rxBuf, size_t size,
+//                                          void *userArg, int_fast16_t status);
+static void UDHAL_writeCallback(UART2_Handle UART2_handle, void *rxBuf, size_t size,
                                           void *userArg, int_fast16_t status);
+// using "void" type instead of "UART2_Callback" type appears to have solved the problem:
+// "incompatible function pointer types assigning to 'UART2_Callback'"
+// see example: https://dev.ti.com/tirex/explore/node?node=A__ABoSXedFrgG.25BvN23Bzw__com.ti.SIMPLELINK_CC13XX_CC26XX_SDK__BSEc4rl__LATEST
+// "void" is used instead "UART2_Callback".
 
 /*********************************************************************
  * Marco
@@ -164,13 +173,14 @@ static void UDHAL_UART_close()
  *
  * @return  None.
  */
-static UART2_Callback UDHAL_readCallback(UART2_Handle UART2_handle, void *rxBuf, size_t size, void *userArg, int_fast16_t status)
+//static UART2_Callback UDHAL_readCallback(UART2_Handle UART2_handle, void *rxBuf, size_t size, void *userArg, int_fast16_t status)
+static void UDHAL_readCallback(UART2_Handle UART2_handle, void *rxBuf, size_t size, void *userArg, int_fast16_t status)
 {
       //Pass the received byte to the flow control handler
       STM32MCP_flowControlHandler(((uint8_t *)rxBuf)[0]);
       //Wait the the next received byte
       UDHAL_UART_read(&receivedByte, 1);
-      return (NULL);
+
 }
 
 /*********************************************************************
@@ -182,7 +192,8 @@ static UART2_Callback UDHAL_readCallback(UART2_Handle UART2_handle, void *rxBuf,
  *
  * @return  None.
  */
-static UART2_Callback UDHAL_writeCallback(UART2_Handle UART2_handle, void *rxBuf, size_t size, void *userArg, int_fast16_t status)
+//static UART2_Callback UDHAL_writeCallback(UART2_Handle UART2_handle, void *rxBuf, size_t size, void *userArg, int_fast16_t status)
+static void UDHAL_writeCallback(UART2_Handle UART2_handle, void *rxBuf, size_t size, void *userArg, int_fast16_t status)
 {
-    return (NULL);
+
 }

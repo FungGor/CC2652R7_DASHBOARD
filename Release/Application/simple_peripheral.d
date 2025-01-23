@@ -119,7 +119,6 @@ Application/simple_peripheral.o: ../Application/simple_peripheral.c \
  C:/ti/simplelink_cc13xx_cc26xx_sdk_7_40_00_77/source/ti/ble5stack/rom/map_direct.h \
  C:/ti/simplelink_cc13xx_cc26xx_sdk_7_40_00_77/source/ti/ble5stack/icall/inc/icall_api_idx.h \
  C:/ti/simplelink_cc13xx_cc26xx_sdk_7_40_00_77/source/ti/ble5stack/profiles/dev_info/devinfoservice.h \
- C:/ti/simplelink_cc13xx_cc26xx_sdk_7_40_00_77/source/ti/ble5stack/profiles/simple_profile/simple_gatt_profile.h \
  C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Profiles/dashboard_profile.h \
  C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Hardware/gGo_device_params.h \
  C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Hardware/battery_params.h \
@@ -387,8 +386,6 @@ C:/ti/simplelink_cc13xx_cc26xx_sdk_7_40_00_77/source/ti/ble5stack/rom/map_direct
 C:/ti/simplelink_cc13xx_cc26xx_sdk_7_40_00_77/source/ti/ble5stack/icall/inc/icall_api_idx.h:
 
 C:/ti/simplelink_cc13xx_cc26xx_sdk_7_40_00_77/source/ti/ble5stack/profiles/dev_info/devinfoservice.h:
-
-C:/ti/simplelink_cc13xx_cc26xx_sdk_7_40_00_77/source/ti/ble5stack/profiles/simple_profile/simple_gatt_profile.h:
 
 C:/Users/yuche/workspace_v12/genev_gGo_LP_CC2652R7_tirtos7_ticlang/Profiles/dashboard_profile.h:
 

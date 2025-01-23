@@ -19,6 +19,7 @@ extern "C"
 #include <stdint.h>
 #include <math.h>
 #include "Hardware/gGo_device_params.h"
+
 #include "Hardware/STM32MCP.h"
 
 #include "Application/motor_control.h"
@@ -111,6 +112,9 @@ extern uint16_t brake_and_throttle_getBrakePercent();
 
 extern uint8_t brake_and_throttle_getControlLaw();
 extern void brake_and_throttle_setControlLaw(uint8_t control_law);
+extern void bat_powerOnRegister(uint8_t *ptrpowerOn);
+extern void bat_zeroIQ();
+extern void bat_dashboard_speedmode_service();
 
 /*********************************************************************
 *********************************************************************/

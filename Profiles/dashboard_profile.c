@@ -106,7 +106,8 @@ static CONST gattAttrType_t DashboardDecl = { ATT_BT_UUID_SIZE, Dashboard_ServUU
 // Characteristic "Dashboard_Error_Code" Properties (for declaration) - Client (App) side
 static uint8 Dashboard_Error_CodeProps = GATT_PROP_READ | GATT_PROP_NOTIFY;
 // Characteristic "Dashboard_Speed_Mode" Properties (for declaration)
-static uint8 Dashboard_Speed_ModeProps = GATT_PROP_READ | GATT_PROP_NOTIFY;
+//static uint8 Dashboard_Speed_ModeProps = GATT_PROP_READ | GATT_PROP_NOTIFY;
+static uint8 Dashboard_Speed_ModeProps = GATT_PROP_READ | GATT_PROP_WRITE | GATT_PROP_NOTIFY;  // Chee 20250111
 // Characteristic "Dashboard_Light_Status" Properties (for declaration)
 static uint8 Dashboard_Light_StatusProps = GATT_PROP_READ | GATT_PROP_NOTIFY;
 // Characteristic "Dashboard_Light_Mode" Properties (for declaration)
@@ -230,14 +231,15 @@ static gattAttribute_t DashboardAttrTbl[] =
       // Dashboard_Speed_Mode Characteristic Value
       {
         { ATT_BT_UUID_SIZE, Dashboard_Speed_ModeUUID },
-            GATT_PERMIT_READ,
+//            GATT_PERMIT_READ,
+            GATT_PERMIT_READ | GATT_PERMIT_WRITE,   // Client is given the permission to write. Chee 20250111
             0,
             Dashboard_Speed_ModeVal
       },
           // Dashboard_Speed_Mode CCCD
             {
               { ATT_BT_UUID_SIZE, clientCharCfgUUID },
-                  GATT_PERMIT_READ | GATT_PERMIT_WRITE,
+                  GATT_PERMIT_READ | GATT_PERMIT_WRITE,   // Client is given the permission to write
                   0,
                   (uint8 *)&Dashboard_Speed_ModeConfig
             },
@@ -290,18 +292,18 @@ static gattAttribute_t DashboardAttrTbl[] =
       // Dashboard_Light_Mode Characteristic Value
       {
         { ATT_BT_UUID_SIZE, Dashboard_Light_ModeUUID },
-            GATT_PERMIT_READ | GATT_PERMIT_WRITE,   // Client is given the permission to write
+            GATT_PERMIT_READ | GATT_PERMIT_WRITE,   // Client (mobile App) is given the permission to write
             0,
             Dashboard_Light_ModeVal
       },
           // Dashboard_Light_Mode : Client Characteristic Configuration Description
-                      // Light mode can be changed from APP (Client)
-                      {
-                        { ATT_BT_UUID_SIZE, clientCharCfgUUID },
-                            GATT_PERMIT_READ | GATT_PERMIT_WRITE,
-                            0,
-                            (uint8 *)&Dashboard_Light_ModeConfig
-                      },
+      // Light mode can be changed from APP (Client)
+      {
+        { ATT_BT_UUID_SIZE, clientCharCfgUUID },
+            GATT_PERMIT_READ | GATT_PERMIT_WRITE,
+            0,
+            (uint8 *)&Dashboard_Light_ModeConfig
+      },
       // Dashboard_Light_Mode user descriptor
       {
         {ATT_BT_UUID_SIZE, charUserDescUUID},
@@ -442,7 +444,6 @@ extern void Dashboard_profile_init(){
     DCVArray.ptr_lightStatus = Dashboard_Light_StatusVal;
     DCVArray.ptr_deviceUpTime = Dashboard_Device_UpTimeVal;
 }
-
 
 extern void* Dashboard_CharValRegister(void)
 {
@@ -832,7 +833,7 @@ static bStatus_t Dashboard_ReadAttrCB( uint16 connHandle, gattAttribute_t *pAttr
 
 
 /*********************************************************************
- * @fn      Dashbpard_WriteAttrCB
+ * @fn      Dashboard_WriteAttrCB
  *
  * @brief   Validate attribute data prior to a write operation
  *
@@ -860,6 +861,7 @@ bStatus_t Dashboard_WriteAttrCB(uint16_t connHandle,
     status = GATTServApp_ProcessCCCWriteReq( connHandle, pAttr, pValue, len,
                                              offset, GATT_CLIENT_CFG_NOTIFY);
   }
+  /* Toggle light mode */
   else if(! memcmp(pAttr->type.uuid, Dashboard_Light_ModeUUID, pAttr->type.len))
   {
       if ( offset + len > DASHBOARD_LIGHT_MODE_LEN )
@@ -874,6 +876,23 @@ bStatus_t Dashboard_WriteAttrCB(uint16_t connHandle,
         // Only notify application if entire expected value is written
         if ( offset + len == DASHBOARD_LIGHT_MODE_LEN)
           paramID = DASHBOARD_LIGHT_MODE;
+      }
+  }
+  /* Toggle lock and unlock of speed mode */  //Chee added 20250110
+  else if(! memcmp(pAttr->type.uuid, Dashboard_Speed_ModeUUID, pAttr->type.len))
+  {
+      if ( offset + len > DASHBOARD_SPEED_MODE_LEN )
+      {
+            status = ATT_ERR_INVALID_OFFSET;
+      }
+      else
+      {
+         // Copy pValue into the variable we point to from the attribute table.
+        memcpy(pAttr->pValue + offset, pValue, len);
+
+        // Only notify application if entire expected value is written
+        if ( offset + len == DASHBOARD_SPEED_MODE_LEN)
+          paramID = DASHBOARD_SPEED_MODE;
       }
   }
   else

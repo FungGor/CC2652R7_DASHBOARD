@@ -34,9 +34,6 @@
 Task_Struct     gptTask;
 uint8_t         gptTaskStack[GPT_TASK_STACK_SIZE];
 
-//Debug tracking
-uint8_t         debug_shutdown;
-
 // Variables
 static uint8_t  *ptr_gpt_initComplete_flag = GPT_INACTIVE;  // static enables the same variable name to be used in across various files.
 //static uint8_t  *ptr_gpt_snvWriteComplete_flag = 0;
@@ -201,7 +198,6 @@ static void GeneralPurposeTimer_taskFxn(UArg a0, UArg a1)
           if (gpt_counter % N_data_analytics == 0) // N = N_data_analytics
           {
               gpt_counter_NDA++;
-
           /****  Periodic communication and data analytics must be executed
            *     in the same time interval.
            *     The time interval is N_data_analytics x GPT_TIME
@@ -219,7 +215,6 @@ static void GeneralPurposeTimer_taskFxn(UArg a0, UArg a1)
                   led_display_changeDashSpeed();
               }
           }
-
           /***************************************************************
            * Executes at every 2 intervals
            *
@@ -255,30 +250,29 @@ static void GeneralPurposeTimer_taskFxn(UArg a0, UArg a1)
 
           /**** counter only active if (*ptr_gpt_initComplete_flag) == 1  *****/
           gpt_counter++;
-
           /******************************************************************************
            * When instructed to Power Off, the programme enters here to exit for loop
            ******************************************************************************/
 //          if (gpt_PWR_OFF() == true)  //or alternatively:
           if (!(*ptr_gpt_POWER_ON))
           {
+              bat_zeroIQ();  /* Send IQ = 0 to Motor controller  */
               data_analytics();
               data2snvBuffer();
               gpt_snvWriteFlag = 1;  // flag = 1 allows simple peripheral to execute save snvBuffer to snv and break out FOR loop
+              Task_sleep(300 * 1000 / Clock_tickPeriod);    // sleep for 300 milliseconds
+
               /**** When instructed to Power Off and after breaking out of FOR loop,
                *    the programme exits and reaches here.
                *    The following codes and power off procedure are executed
                ***************************************************************************************/
-              debug_shutdown=4;
-              STM32MCP_toggleCommunication();
-              Task_sleep(300 * 1000 / Clock_tickPeriod); /*Repeat sleep as long as snv write is NOT complete*/
-              //Add: STM32 command turn off tail-light and auxiliary light
-              STM32MCP_controlEscooterBehavior(ESCOOTER_POWER_OFF);
-              GPIO_write(CONFIG_GPIO_LED_0, 0);
               lights_setLightOff();       /* Ensure lights are turned off */
+              //Add: STM32 command turn off tail-light and auxiliary light
               led_display_setAllOff();    /* turns off all led lights */
-        //      led_display_deinit(); /*turns off led display*/
-
+              led_display_deinit(); /*turns off led display*/
+              STM32MCP_toggleCommunication();
+              STM32MCP_controlEscooterBehavior(ESCOOTER_POWER_OFF);
+              GPIO_write(CONFIG_GPIO_LED_0, 0); // for launchpad only
               break;      // break out of GPT infinite FOR loop
           }
       }

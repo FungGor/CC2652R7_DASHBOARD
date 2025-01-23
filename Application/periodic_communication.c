@@ -87,7 +87,7 @@ void periodic_communication_MCUSampling()
 #ifndef MOTOR_CONNECT
 
     // ***** Simulation of dummy Battery Voltage
-    ptr_pc_MCUDArray->bat_voltage_mV = 44200;//7200 *sin(PI_CONSTANT * xtt * 0.0075) + 39000;   // simulate over-voltage, voltage-normal and under-voltage.  unit in mV
+    ptr_pc_MCUDArray->bat_voltage_mV = 40600;//7200 *sin(PI_CONSTANT * xtt * 0.0075) + 39000;   // simulate over-voltage, voltage-normal and under-voltage.  unit in mV
 
     // ***** Simulation of dummy Battery Current
     ptr_pc_MCUDArray->bat_current_mA = 4000; //rand()%13 * 1000;                                 // 3000; // dummy data - get battery current from MCU:  unit in mA
@@ -125,7 +125,7 @@ void periodic_communication_MCUSampling()
     {
         STM32MCP_getRegisterFrame(STM32MCP_MOTOR_1_ID, STM32MCP_BUS_VOLTAGE_REG_ID);
         //STM32MCP_getRegisterFrame(STM32MCP_MOTOR_1_ID, STM32MCP_TORQUE_MEASURED_REG_ID);       // Need to create a getRegisterFrame for battery current
-        //STM32MCP_getRegisterFrame(STM32MCP_MOTOR_1_ID, STM32MCP_SPEED_MEASURED_REG_ID);         // is speed in RPM
+
         //STM32MCP_getRegisterFrame(STM32MCP_MOTOR_1_ID, STM32MCP_HEATSINK_TEMPERATURE_REG_ID);
         //STM32MCP_getRegisterFrame(STM32MCP_MOTOR_1_ID, STM32MCP_MOTOR_TEMPERATURE_REG_ID);
         //STM32MCP_getRegisterFrame(STM32MCP_MOTOR_1_ID, STM32MCP_BUS_CURRENT_REG_ID);
@@ -151,7 +151,7 @@ void periodic_communication_MCUSamplingRPM()
 #ifndef MOTOR_CONNECT
     // ***** Simulation of dummy RPM
     uint16_t pc_rpm;   // but payload length is 0x05
-    int32_t rawRPM = 180 * sin(PI_CONSTANT * 0.0075 * xrpm ) + 140;  // 264;  //dummy data - get RPM from MCU:  unit in rpm.  20 secs per cycle = 0.05 Hz;
+    int32_t rawRPM = 531; //180 * sin(PI_CONSTANT * 0.0075 * xrpm ) + 200;  // 264;  //dummy data - get RPM from MCU:  unit in rpm.  20 secs per cycle = 0.05 Hz;
     uint8_t pc_rpmStatus;
 
     if(rawRPM >= 0)
